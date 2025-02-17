@@ -1,17 +1,18 @@
 version: '3'
 
 services:
-  db_psql:
-    container_name: db_psql
-    image: postgres:latest
+  db_postgis:
+    container_name: db_postgis
+    image: postgis/postgis:latest
     env_file:
       - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5434:5432"
 
-  web:
+  web_gc:
+    container_name: web_gc
     build: .
     command: sh -c "python manage.py makemigrations && python manage.py migrate &&  python manage.py shell < create_superuser.py && python manage.py runserver 0.0.0.0:8000"
     env_file:
@@ -19,9 +20,9 @@ services:
     volumes:
       - .:/code
     ports:
-      - "8000:8000"
+      - "8002:8000"
     depends_on:
-      - db_psql
+      - db_postgis
     restart: "on-failure"
 
 volumes:
