@@ -1,0 +1,8 @@
+###
+POST http://localhost:8000/api/token/
+content-type: application/json
+
+{
+    "username": "username",
+    "password": "password"
+}

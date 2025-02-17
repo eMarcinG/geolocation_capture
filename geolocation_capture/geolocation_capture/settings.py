@@ -11,8 +11,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 from pathlib import Path
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,7 +43,33 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'management',
+    'rest_framework',
+    'rest_framework_simplejwt',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(os.getenv('ACCESS_TOKEN_LIFETIME', 5))),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=int(os.getenv('REFRESH_TOKEN_LIFETIME', 1))),
+    'ROTATE_REFRESH_TOKENS': os.getenv('ROTATE_REFRESH_TOKENS', 'False') == 'True',
+    'BLACKLIST_AFTER_ROTATION': os.getenv('BLACKLIST_AFTER_ROTATION', 'True') == 'True',
+    'ALGORITHM': os.getenv('ALGORITHM', 'HS256'),
+    'SIGNING_KEY': os.getenv('SIGNING_KEY', 'your_secret_key'),
+    'VERIFYING_KEY': os.getenv('VERIFYING_KEY', None),
+    'AUTH_HEADER_TYPES': (os.getenv('AUTH_HEADER_TYPES', 'Bearer'),),
+    'USER_ID_FIELD': os.getenv('USER_ID_FIELD', 'id'),
+    'USER_ID_CLAIM': os.getenv('USER_ID_CLAIM', 'user_id'),
+    'AUTH_TOKEN_CLASSES': (os.getenv('AUTH_TOKEN_CLASSES', 'rest_framework_simplejwt.tokens.AccessToken'),),
+    'TOKEN_TYPE_CLAIM': os.getenv('TOKEN_TYPE_CLAIM', 'token_type'),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
