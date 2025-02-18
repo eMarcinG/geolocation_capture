@@ -10,11 +10,25 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5434:5432"
+    networks:
+      - my_network
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    networks:
+      - my_network
 
   web_gc:
     container_name: web_gc
     build: .
-    command: sh -c "python manage.py makemigrations && python manage.py migrate &&  python manage.py shell < create_superuser.py && python manage.py runserver 0.0.0.0:8000"
+    command: >
+      sh -c "
+      python manage.py makemigrations &&
+      python manage.py migrate &&
+      python manage.py shell < create_superuser.py &&
+      python manage.py runserver 0.0.0.0:8000"
     env_file:
       - .env
     volumes:
@@ -23,7 +37,27 @@ services:
       - "8002:8000"
     depends_on:
       - db_postgis
+      - redis
+    networks:
+      - my_network
     restart: "on-failure"
+
+  celery:
+    build: .
+    command: celery -A geolocation_capture worker --loglevel=info --uid=nobody
+    env_file:
+      - .env
+    volumes:
+      - .:/code
+    depends_on:
+      - db_postgis
+      - redis
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
 
 volumes:
   postgres_data:

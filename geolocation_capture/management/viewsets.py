@@ -1,11 +1,9 @@
-import requests
 from rest_framework import viewsets
-from .models import Geolocation
-from .serializers import GeolocationSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
-import os
+from .models import Geolocation
+from .serializers import GeolocationSerializer
+from .tasks import fetch_and_store_geolocation
 
 class GeolocationViewSet(viewsets.ModelViewSet):
     queryset = Geolocation.objects.all()
@@ -17,21 +15,6 @@ class GeolocationViewSet(viewsets.ModelViewSet):
         if not ip_or_url:
             return Response({"error": "IP address or URL is required"}, status=400)
 
-        api_key = os.getenv('IPSTACK_API_KEY')
-        response = requests.get(f'http://api.ipstack.com/{ip_or_url}?access_key={api_key}')
-        data = response.json()
+        result = fetch_and_store_geolocation.delay(ip_or_url)
 
-        if 'error' in data:
-            return Response({"error": "Invalid IP address or URL"}, status=400)
-
-        geolocation = Geolocation.objects.create(
-            ip_address=data.get('ip'),
-            url=None if 'ip' in data else ip_or_url,
-            latitude=data.get('latitude'),
-            longitude=data.get('longitude'),
-            city=data.get('city'),
-            region=data.get('region_name'),
-            country=data.get('country_name')
-        )
-
-        return Response(GeolocationSerializer(geolocation).data)
+        return Response({"status": "Task started", "task_id": result.id})

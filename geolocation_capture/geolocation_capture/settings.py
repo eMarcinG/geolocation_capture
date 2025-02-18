@@ -160,3 +160,16 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+def get_env_list(var_name, default_value=None):
+    value = os.getenv(var_name, default_value)
+    if value:
+        return value.split(',')
+    return default_value
+
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
+CELERY_ACCEPT_CONTENT = get_env_list('CELERY_ACCEPT_CONTENT', ['json'])
+CELERY_TASK_SERIALIZER = os.getenv('CELERY_TASK_SERIALIZER')
+CELERY_RESULT_SERIALIZER = os.getenv('CELERY_RESULT_SERIALIZER')
+CELERY_TIMEZONE = os.getenv('CELERY_TIMEZONE')
