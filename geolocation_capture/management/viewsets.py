@@ -1,3 +1,4 @@
+import requests
 from rest_framework import viewsets
 from .models import Geolocation
 from .serializers import GeolocationSerializer
