@@ -11,10 +11,10 @@ class GeolocationViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def fetch_geolocation(self, request):
-        ip_or_url = request.data.get('ip_or_url')
-        if not ip_or_url:
+        ip = request.data.get('ip')
+        if not ip:
             return Response({"error": "IP address or URL is required"}, status=400)
 
-        result = fetch_and_store_geolocation.delay(ip_or_url)
+        result = fetch_and_store_geolocation.delay(ip)
 
         return Response({"status": "Task started", "task_id": result.id})
