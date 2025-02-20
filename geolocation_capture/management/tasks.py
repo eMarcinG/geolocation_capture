@@ -15,16 +15,25 @@ class CustomTask(Task):
     default_retry_delay = 60  # Retry after 60 seconds
 
 def check_url_status(url):
-    """Sprawdza, czy URL odpowiada kodem statusu 200."""
+    """Checks if the URL responds with status code 200."""
     try:
-        response = requests.get(url, timeout=10)  # Dodajemy timeout dla bezpieczeństwa
+        response = requests.get(url, timeout=10)  # Adding timeout for safety
         return response.status_code == 200
     except requests.exceptions.RequestException:
         return False
 
 @shared_task(bind=True, base=CustomTask)
 def fetch_and_store_geolocation(self, ip):
+    """
+    Fetches geolocation data for the given IP and stores it in the Geolocation model.
+    Retries up to 3 times if the request fails.
 
+    Args:
+        ip (str): The IP address to fetch geolocation data for.
+
+    Returns:
+        dict: The serialized geolocation data.
+    """
     base_url = os.getenv('BASE_GEODATA_URL')
     base_api_key = os.getenv('BASE_API_KEY')
     alternative_url = os.getenv('ALTERNATIVE_GEODATA_URL')
@@ -36,15 +45,15 @@ def fetch_and_store_geolocation(self, ip):
     if check_url_status(alternative_url):
         urls_to_try.append(f"{alternative_url}/{ip}?token={alternative_api_key}") 
 
-    logger.info(f"Próbowane URLe: {urls_to_try}")
+    logger.info(f"Attempting URLs: {urls_to_try}")
     
     if not urls_to_try:
-        raise ValueError("Brak poprawnie skonfigurowanych URLi w zmiennych środowiskowych")
+        raise ValueError("No correctly configured URLs in environment variables")
 
     last_exception = None
     data = None
     
-    # Próbuj kolejne URLi
+    # Try each URL
     for url in urls_to_try:
         try:
             response = requests.get(url, timeout=10)
@@ -60,15 +69,14 @@ def fetch_and_store_geolocation(self, ip):
             logger.error(f"Request failed: {str(e)}")
             raise
 
-    # Jeśli wszystkie próby się nie udały
+    # If all attempts failed
     if data is None:
-        logger.error(f"Wszystkie nieudane próby dla {ip}. Próba retry #{self.request.retries}")
+        logger.error(f"All attempts failed for {ip}. Retry attempt #{self.request.retries}")
         try:
             self.retry(exc=last_exception, countdown=self.default_retry_delay)
         except MaxRetriesExceededError:
-            logger.error(f"MAX RETRIES dla {ip}")
+            logger.error(f"MAX RETRIES exceeded for {ip}")
             raise
-
 
     if 'loc' in data:
         latitude, longitude = map(float, data['loc'].split(','))

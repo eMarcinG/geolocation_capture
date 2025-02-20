@@ -6,11 +6,17 @@ from .serializers import GeolocationSerializer
 from .tasks import fetch_and_store_geolocation
 
 class GeolocationViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing geolocation instances.
+    """
     queryset = Geolocation.objects.all()
     serializer_class = GeolocationSerializer
 
     @action(detail=False, methods=['post'])
     def fetch_geolocation(self, request):
+        """
+        A custom action to fetch geolocation data for a given IP address and store it.
+        """
         ip = request.data.get('ip')
         if not ip:
             return Response({"error": "IP address or URL is required"}, status=400)
