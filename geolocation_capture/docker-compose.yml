@@ -12,6 +12,25 @@ services:
       - "5434:5432"
     networks:
       - my_network
+    restart: unless-stopped
+
+  db_postgis_replica:
+    container_name: db_postgis_replica
+    image: postgis/postgis:latest
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
+    command: "postgres -c wal_level=replica -c archive_mode=on -c archive_command='cp %p /var/lib/postgresql/data/%f' -c max_wal_senders=3 -c max_replication_slots=3"
+    volumes:
+      - postgres_replica_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+    networks:
+      - my_network
+    depends_on:
+      - db_postgis
+    restart: unless-stopped
 
   redis:
     image: "redis:alpine"
@@ -19,6 +38,7 @@ services:
       - "6379:6379"
     networks:
       - my_network
+    restart: unless-stopped
 
   web_gc:
     container_name: web_gc
@@ -61,3 +81,4 @@ networks:
 
 volumes:
   postgres_data:
+  postgres_replica_data:
