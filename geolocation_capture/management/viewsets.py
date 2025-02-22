@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .models import Geolocation
 from .serializers import GeolocationSerializer
 from .tasks import fetch_and_store_geolocation
@@ -11,6 +12,7 @@ class GeolocationViewSet(viewsets.ModelViewSet):
     """
     queryset = Geolocation.objects.all()
     serializer_class = GeolocationSerializer
+    permission_classes = [IsAuthenticated]
 
     @action(detail=False, methods=['post'])
     def fetch_geolocation(self, request):
