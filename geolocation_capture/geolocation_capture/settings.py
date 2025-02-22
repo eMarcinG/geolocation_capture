@@ -114,18 +114,20 @@ DATABASES = {
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': os.getenv('POSTGRES_HOST'),
         'PORT': os.getenv('POSTGRES_PORT'),
+        'ATOMIC_REQUESTS': True
     },
     'replica': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': os.getenv('REPLICA_POSTGRES_DB'),
-        'USER': os.getenv('REPLICA_POSTGRES_USER'),
-        'PASSWORD': os.getenv('REPLICA_POSTGRES_PASSWORD'),
-        'HOST': os.getenv('REPLICA_POSTGRES_HOST'),
-        'PORT': os.getenv('REPLICA_POSTGRES_PORT'),
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT'),
+        'ATOMIC_REQUESTS': True
     }
 }
 
-DATABASE_ROUTERS = ['management.db_router.FailoverRouter']
+DATABASE_ROUTERS = ['geolocation_capture.db_router.PrimaryReplicaRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
