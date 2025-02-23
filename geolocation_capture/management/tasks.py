@@ -86,7 +86,7 @@ def fetch_and_store_geolocation(self, ip):
 
     geolocation = Geolocation.objects.create(
         ip_address=data.get('ip'),
-        url=None if 'ip' in data else data.get('hostname'),
+        url=data.get('hostname'),
         latitude=latitude,
         longitude=longitude,
         city=data.get('city'),
