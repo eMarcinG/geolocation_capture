@@ -29,15 +29,18 @@ class GeolocationViewSet(viewsets.ModelViewSet, GeolocationDatabaseMixin):
     @action(detail=False, methods=['post'], url_path='fetch', permission_classes=[IsAuthenticated])
     def fetch_geolocation(self, request):
         """
-        A custom action to fetch geolocation data for a given IP address and store it.
+        A custom action to fetch geolocation data for a given IP address or URL and store it.
         """
         ip = request.data.get('ip')
-        if not ip:
+        url = request.data.get('url')
+
+        if not ip and not url:
             return Response({"error": "IP address or URL is required"}, status=400)
 
-        result = fetch_and_store_geolocation.delay(ip)
+        result = fetch_and_store_geolocation.delay(ip=ip, url=url)
 
         return Response({"status": "Task started", "task_id": result.id})
+
 
     @action(detail=False, methods=['get'], url_path='search', permission_classes=[IsAuthenticated])
     def search_geolocation(self, request):
