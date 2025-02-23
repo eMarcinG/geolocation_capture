@@ -10,33 +10,23 @@ class GeolocationDatabaseMixin:
         geolocations = []
 
         if ip:
-            geolocations = self._get_geolocations_by_ip(ip)
+            geolocations = self._get_geolocations('ip_address', ip)
             if geolocations:
                 return self._select_best_geolocation(geolocations)
 
         if url:
-            geolocations = self._get_geolocations_by_url(url)
+            geolocations = self._get_geolocations('url', url)
             if geolocations:
                 return self._select_best_geolocation(geolocations)
 
         return None
 
-    def _get_geolocations_by_ip(self, ip):
+    def _get_geolocations(self, field, value):
         try:
-            return list(Geolocation.objects.using('default').filter(ip_address=ip))
-            
+            return list(Geolocation.objects.using('default').filter(**{field: value}))
         except OperationalError:
             try:
-                return list(Geolocation.objects.using('secondary').filter(ip_address=ip))
-            except OperationalError:
-                return []
-
-    def _get_geolocations_by_url(self, url):
-        try:
-            return list(Geolocation.objects.using('default').filter(url=url))
-        except OperationalError:
-            try:
-                return list(Geolocation.objects.using('secondary').filter(url=url))
+                return list(Geolocation.objects.using('secondary').filter(**{field: value}))
             except OperationalError:
                 return []
 
