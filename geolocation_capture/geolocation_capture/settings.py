@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'management',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_gis',
 ]
 
 REST_FRAMEWORK = {
@@ -107,15 +108,26 @@ WSGI_APPLICATION = 'geolocation_capture.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': os.getenv('POSTGRES_DB'),
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': os.getenv('POSTGRES_HOST'),
         'PORT': os.getenv('POSTGRES_PORT'),
+        'ATOMIC_REQUESTS': True
+    },
+    'replica': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT'),
+        'ATOMIC_REQUESTS': True
     }
 }
 
+DATABASE_ROUTERS = ['geolocation_capture.db_router.PrimaryReplicaRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -159,3 +171,16 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+def get_env_list(var_name, default_value=None):
+    value = os.getenv(var_name, default_value)
+    if value:
+        return value.split(',')
+    return default_value
+
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
+CELERY_ACCEPT_CONTENT = get_env_list('CELERY_ACCEPT_CONTENT', ['json'])
+CELERY_TASK_SERIALIZER = os.getenv('CELERY_TASK_SERIALIZER')
+CELERY_RESULT_SERIALIZER = os.getenv('CELERY_RESULT_SERIALIZER')
+CELERY_TIMEZONE = os.getenv('CELERY_TIMEZONE')

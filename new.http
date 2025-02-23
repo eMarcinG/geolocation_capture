@@ -1,8 +1,41 @@
 ###
-POST http://localhost:8000/api/token/
+POST http://localhost:8002/api/token/
 content-type: application/json
 
 {
-    "username": "username",
+    "username": "user",
     "password": "password"
 }
+
+###
+
+POST http://localhost:8002/api/geolocations/fetch/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQwMzM3MjM4LCJpYXQiOjE3NDAzMzY5MzgsImp0aSI6IjNhNDBjZThlMGM0ZjRiZjc4NjNmMTUyYzkxMWUxYjViIiwidXNlcl9pZCI6MX0.HXPLvmtNe9udNcPpoODMHsXJVKSv7VltcJxqypGyZFk
+
+{
+    "url": "www.interia.pl"
+}
+
+
+###
+
+GET http://localhost:8002/api/geolocations/search/?url=www.interia.pl
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQwMzIxMTEzLCJpYXQiOjE3NDAzMjA4MTMsImp0aSI6IjA2OTRkMmQ2MTYwZTQwODQ4NDFhYzkwYzY4ZGY4NWFiIiwidXNlcl9pZCI6MX0.qwVExQZBs3nVJ0KKfP-pn12ceBkIq14_D-X28aLgDL8
+
+{
+
+}
+
+###
+
+GET http://localhost:8002/api/geolocations/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQwMzM3MjM4LCJpYXQiOjE3NDAzMzY5MzgsImp0aSI6IjNhNDBjZThlMGM0ZjRiZjc4NjNmMTUyYzkxMWUxYjViIiwidXNlcl9pZCI6MX0.HXPLvmtNe9udNcPpoODMHsXJVKSv7VltcJxqypGyZFk
+
+{
+
+}
+
+###
