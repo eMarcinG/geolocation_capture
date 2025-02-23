@@ -2,8 +2,6 @@
 # Geolocation capture app
 #
 
-# Geolocation capture app
-
 This project implements a simple RESTful API for storing and retrieving geolocation data.  It uses the ipstack.com / ipinfo.io service to enrich IP addresses and URLs with geolocation information.  The API allows for adding, deleting, and retrieving geolocation data based on IP address or URL.  The application is designed to handle various error conditions, such as database or ipstack.com service unavailability.  It includes basic test coverage and can be easily deployed using Docker.  
 
 ## Features
