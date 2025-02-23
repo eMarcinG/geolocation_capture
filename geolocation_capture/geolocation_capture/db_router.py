@@ -7,10 +7,10 @@ class PrimaryReplicaRouter:
             connections['default'].ensure_connection()
             return 'default'
         except OperationalError:
-            return 'replica'  # Automatyczne przejście do repliki
+            return 'replica'  
 
     def db_for_write(self, model, **hints):
-        return 'default'  # Zawsze pisze do primary
+        return 'default'
 
     def allow_relation(self, obj1, obj2, **hints):
         return True
