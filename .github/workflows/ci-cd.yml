@@ -81,8 +81,8 @@ jobs:
       # Run containers
       - name: Build and check infrastructure
         run: |
-          ls -la geolocation_capture/docker-compose.yml
           docker-compose -f geolocation_capture/docker-compose.yml up -d --build
-          docker-compose -f geolocation_capture/docker-compose.yml ps  # container status
-          docker-compose -f geolocation_capture/docker-compose.yml logs  # logs
+          docker-compose -f geolocation_capture/docker-compose.yml exec -T web_gc python manage.py migrate
+          docker-compose -f geolocation_capture/docker-compose.yml exec -T web_gc python manage.py test -v 3
+          docker-compose -f geolocation_capture/docker-compose.yml logs web_gc
           docker-compose -f geolocation_capture/docker-compose.yml down
