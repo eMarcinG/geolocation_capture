@@ -82,6 +82,7 @@ jobs:
       - name: Build and check infrastructure
         run: |
           docker-compose -f geolocation_capture/docker-compose.yml up -d --build
+          docker-compose -f geolocation_capture/docker-compose.yml exec -T db_postgis bash -c 'until pg_isready -U $POSTGRES_USER -d $POSTGRES_DB; do sleep 2; done'
           docker-compose -f geolocation_capture/docker-compose.yml exec -T web_gc python manage.py migrate
           docker-compose -f geolocation_capture/docker-compose.yml exec -T web_gc python manage.py test -v 3
           docker-compose -f geolocation_capture/docker-compose.yml logs web_gc
