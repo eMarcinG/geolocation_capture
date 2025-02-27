@@ -13,18 +13,22 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
       # Checkout repo
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Docker build
-      - name: Build Docker image
+      # Install Docker Compose 
+      - name: Set up Docker Compose
         run: |
-          docker build -t geolocation_capture:${{ github.sha }} -f geolocation_capture/Dockerfile geolocation_capture
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
 
-      # Run test in container
-      - name: Run tests
+      # Run Docker Compose + test
+      - name: Build and run tests with Docker Compose
         run: |
-          docker run --rm geolocation_capture:${{ github.sha }} pytest geolocation_capture/management/tests.py
+          docker-compose -f geolocation_capture/docker-compose.yml up -d --build
+          docker-compose exec -T web_gc python manage.py test
+          docker-compose down
