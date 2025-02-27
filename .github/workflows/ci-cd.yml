@@ -19,16 +19,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Setup Docker (Docker jest już preinstalowany na Ubuntu)
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
-
-      # Budowanie obrazu Docker
+      # Docker build
       - name: Build Docker image
         run: |
-          docker build -t geolocation_capture:${{ github.sha }} geolocation_capture .
+          docker build -t geolocation_capture:${{ github.sha }} -f geolocation_capture/Dockerfile geolocation_capture
 
-      # Uruchamianie testów w kontenerze
+      # Run test in container
       - name: Run tests
         run: |
           docker run --rm geolocation_capture:${{ github.sha }} pytest geolocation_capture/management/tests.py
