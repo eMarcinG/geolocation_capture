@@ -19,6 +19,44 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Secrets
+      - name: Set up environment variables from secrets
+        run: |
+          echo "DJANGO_ENV=${{ secrets.DJANGO_ENV }}" >> $GITHUB_ENV
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> $GITHUB_ENV
+          echo "DEBUG=${{ secrets.DEBUG }}" >> $GITHUB_ENV
+          echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> $GITHUB_ENV
+          echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> $GITHUB_ENV
+          echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> $GITHUB_ENV
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> $GITHUB_ENV
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> $GITHUB_ENV
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+          echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> $GITHUB_ENV
+          echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> $GITHUB_ENV
+          echo "POSTGRES_MASTER_HOST=${{ secrets.POSTGRES_MASTER_HOST }}" >> $GITHUB_ENV
+          echo "REPLICA_POSTGRES_DB=${{ secrets.REPLICA_POSTGRES_DB }}" >> $GITHUB_ENV
+          echo "REPLICA_POSTGRES_USER=${{ secrets.REPLICA_POSTGRES_USER }}" >> $GITHUB_ENV
+          echo "REPLICA_POSTGRES_PASSWORD=${{ secrets.REPLICA_POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+          echo "REPLICA_POSTGRES_HOST=${{ secrets.REPLICA_POSTGRES_HOST }}" >> $GITHUB_ENV
+          echo "REPLICA_POSTGRES_PORT=${{ secrets.REPLICA_POSTGRES_PORT }}" >> $GITHUB_ENV
+          echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> $GITHUB_ENV
+          echo "CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}" >> $GITHUB_ENV
+          echo "CELERY_RESULT_BACKEND=${{ secrets.CELERY_RESULT_BACKEND }}" >> $GITHUB_ENV
+          echo "CELERY_ACCEPT_CONTENT=${{ secrets.CELERY_ACCEPT_CONTENT }}" >> $GITHUB_ENV
+          echo "CELERY_TASK_SERIALIZER=${{ secrets.CELERY_TASK_SERIALIZER }}" >> $GITHUB_ENV
+          echo "CELERY_RESULT_SERIALIZER=${{ secrets.CELERY_RESULT_SERIALIZER }}" >> $GITHUB_ENV
+          echo "CELERY_TIMEZONE=${{ secrets.CELERY_TIMEZONE }}" >> $GITHUB_ENV
+          echo "BASE_GEODATA_URL=${{ secrets.BASE_GEODATA_URL }}" >> $GITHUB_ENV
+          echo "BASE_API_KEY=${{ secrets.BASE_API_KEY }}" >> $GITHUB_ENV
+          echo "ALTERNATIVE_GEODATA_URL=${{ secrets.ALTERNATIVE_GEODATA_URL }}" >> $GITHUB_ENV
+          echo "ALTERNATIVE_API_KEY=${{ secrets.ALTERNATIVE_API_KEY }}" >> $GITHUB_ENV
+          echo "PGPOOL_BACKEND_NODES=${{ secrets.PGPOOL_BACKEND_NODES }}" >> $GITHUB_ENV
+          echo "PGPOOL_SR_CHECK_USER=${{ secrets.PGPOOL_SR_CHECK_USER }}" >> $GITHUB_ENV
+          echo "PGPOOL_SR_CHECK_PASSWORD=${{ secrets.PGPOOL_SR_CHECK_PASSWORD }}" >> $GITHUB_ENV
+          echo "PGPOOL_POSTGRES_USERNAME=${{ secrets.PGPOOL_POSTGRES_USERNAME }}" >> $GITHUB_ENV
+          echo "PGPOOL_POSTGRES_PASSWORD=${{ secrets.PGPOOL_POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+          echo "PGPOOL_ADMIN_USERNAME=${{ secrets.PGPOOL_ADMIN_USERNAME }}" >> $GITHUB_ENV
+          echo "PGPOOL_ADMIN_PASSWORD=${{ secrets.PGPOOL_ADMIN_PASSWORD }}" >> $GITHUB_ENV
       # Install Docker Compose 
       - name: Set up Docker Compose
         run: |
