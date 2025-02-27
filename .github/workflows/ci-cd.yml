@@ -85,7 +85,8 @@ jobs:
         run: |
           docker system prune -a -f
           docker-compose -f geolocation_capture/docker-compose.yml up -d --build
-          timeout 120s bash -c 'until docker-compose -f geolocation_capture/docker-compose.yml exec -T db_postgis pg_isready -U $POSTGRES_USER -d $POSTGRES_DB; do sleep 5; done'
+          docker-compose -f geolocation_capture/docker-compose.yml logs db_postgis
+          timeout 300s bash -c 'until docker-compose -f geolocation_capture/docker-compose.yml exec -T db_postgis pg_isready -U $POSTGRES_USER -d $POSTGRES_DB; do sleep 5; done'
           docker-compose -f geolocation_capture/docker-compose.yml run --rm web_gc python manage.py test -v 3
           docker-compose -f geolocation_capture/docker-compose.yml logs
           docker-compose -f geolocation_capture/docker-compose.yml down
