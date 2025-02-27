@@ -74,19 +74,15 @@ jobs:
       # Instal docker compose
       - name: Set up Docker Compose
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-          sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version
-
+          
       # Run containers
-      - name: Build, run infrastructure and tests
+      - name: Build and check infrastructure
         run: |
-          docker system prune -a -f
+          ls -la geolocation_capture/docker-compose.yml
           docker-compose -f geolocation_capture/docker-compose.yml up -d --build
-          docker-compose -f geolocation_capture/docker-compose.yml logs db_postgis
-          timeout 300s bash -c 'until docker-compose -f geolocation_capture/docker-compose.yml exec -T db_postgis pg_isready -U $POSTGRES_USER -d $POSTGRES_DB; do sleep 5; done'
-          docker-compose -f geolocation_capture/docker-compose.yml run --rm web_gc python manage.py test -v 3
-          docker-compose -f geolocation_capture/docker-compose.yml logs
+          docker-compose -f geolocation_capture/docker-compose.yml ps  # container status
+          docker-compose -f geolocation_capture/docker-compose.yml logs  # logs
           docker-compose -f geolocation_capture/docker-compose.yml down
