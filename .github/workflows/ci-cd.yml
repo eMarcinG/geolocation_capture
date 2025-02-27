@@ -58,6 +58,18 @@ jobs:
           echo "PGPOOL_POSTGRES_PASSWORD=${{ secrets.PGPOOL_POSTGRES_PASSWORD }}" > geolocation_capture/.env
           echo "PGPOOL_ADMIN_USERNAME=${{ secrets.PGPOOL_ADMIN_USERNAME }}" > geolocation_capture/.env
           echo "PGPOOL_ADMIN_PASSWORD=${{ secrets.PGPOOL_ADMIN_PASSWORD }}" > geolocation_capture/.env
+          echo "ACCESS_TOKEN_LIFETIME=${{ secrets.ACCESS_TOKEN_LIFETIME }}" > geolocation_capture/.env
+          echo "REFRESH_TOKEN_LIFETIME=${{ secrets.REFRESH_TOKEN_LIFETIME }}" > geolocation_capture/.env
+          echo "ROTATE_REFRESH_TOKENS=${{ secrets.ROTATE_REFRESH_TOKENS }}" > geolocation_capture/.env
+          echo "BLACKLIST_AFTER_ROTATION=${{ secrets.BLACKLIST_AFTER_ROTATION }}" > geolocation_capture/.env
+          echo "ALGORITHM=${{ secrets.ALGORITHM }}" > geolocation_capture/.env
+          echo "SIGNING_KEY=${{ secrets.SIGNING_KEY }}" > geolocation_capture/.env
+          echo "VERIFYING_KEY=${{ secrets.VERIFYING_KEY }}" > geolocation_capture/.env
+          echo "AUTH_HEADER_TYPES=${{ secrets.AUTH_HEADER_TYPES }}" > geolocation_capture/.env
+          echo "USER_ID_FIELD=${{ secrets.USER_ID_FIELD }}" > geolocation_capture/.env
+          echo "USER_ID_CLAIM=${{ secrets.USER_ID_CLAIM }}" > geolocation_capture/.env
+          echo "AUTH_TOKEN_CLASSES=${{ secrets.AUTH_TOKEN_CLASSES }}" > geolocation_capture/.env
+          echo "TOKEN_TYPE_CLAIM=${{ secrets.TOKEN_TYPE_CLAIM }}" > geolocation_capture/.env
 
       # Install Docker Compose 
       - name: Set up Docker Compose
@@ -70,5 +82,5 @@ jobs:
       - name: Build and run tests with Docker Compose
         run: |
           docker-compose -f geolocation_capture/docker-compose.yml up -d --build
-          docker-compose exec -T web_gc python manage.py test
+          docker-compose exec -T web_gc python manage.py test -v 3
           docker-compose down
