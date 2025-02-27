@@ -15,7 +15,7 @@ ENV C_INCLUDE_PATH=/usr/include/gdal
 WORKDIR /code
 COPY requirements.txt /code/
 COPY . /code/
-
+RUN chmod +x /code/manage.py
 
 RUN pip install --no-cache-dir -r requirements.txt
 
